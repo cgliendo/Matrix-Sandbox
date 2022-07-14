@@ -1,13 +1,10 @@
 //
 import styles from "./ToolBox.module.css";
-const ToolBox = () => {
-  return (
-    <div className={styles.ToolBox}>
-      <button>Interchange</button>
-      <button>Replace</button>
-      <button>Scale</button>
-    </div>
-  );
+const ToolBox = (props) => {
+  const buttons = props.data.map((b) => (
+    <button onClick={b.callback}>{b.name}</button>
+  ));
+  return <div className={styles.ToolBox}>{buttons}</div>;
 };
 
 export default ToolBox;

@@ -1,12 +1,7 @@
 .ToolBox {
   position: absolute;
-  /* bottom: 1rem; */
-  /* top: 5rem; */
-  /* right: 0; */
-  bottom: 3rem;
+  bottom: 10rem;
   display: flex;
-  /* flex-direction: column; */
-  /* background-color: aqua; */
 }
 .ToolBox button {
   padding: 0.5rem;

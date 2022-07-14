@@ -7,6 +7,15 @@
   border: 1px solid aqua;
 }
 
-.MatrixRow span {
+.MatrixRow span,
+.MatrixRow p {
   padding: 1rem 1rem;
+  pointer-events: none;
+}
+
+.MatrixRow {
+  position: relative;
+  transition: top 0.25s ease-in-out;
+  transition: top 0.25s ease-out;
+  top: 0;
 }
