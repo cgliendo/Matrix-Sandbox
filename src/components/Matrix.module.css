@@ -1,0 +1,23 @@
+.Matrix {
+  padding: 0.25rem 1rem;
+  border: 1px solid tomato;
+  background-image: linear-gradient(#efefef, #efefef),
+    linear-gradient(#efefef, #efefef), linear-gradient(#efefef, #efefef),
+    linear-gradient(#efefef, #efefef);
+  background-repeat: no-repeat;
+  background-size: 8px 3px;
+  /* background-position: top right; */
+  /* // ^^^ This value should be equal to width of left OR right border. */
+  background-position: top left, top right, bottom left, bottom right;
+  border: solid #efefef;
+  border-width: 0px 3px;
+}
+
+.Matrix > * {
+  border: 1px solid transparent;
+  border-radius: 2rem;
+}
+
+.Matrix p {
+  padding: 0 2rem;
+}

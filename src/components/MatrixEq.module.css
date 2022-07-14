@@ -1,0 +1,11 @@
+.MatrixEq {
+  display: flex;
+  justify-self: stretch;
+  flex-wrap: wrap;
+  align-content: stretch;
+  justify-content: center;
+}
+
+.MatrixEq p {
+  font-size: 2rem;
+}

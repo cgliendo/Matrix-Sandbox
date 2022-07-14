@@ -1,0 +1,12 @@
+.MatrixRow {
+  color: tomato;
+}
+
+.selected {
+  color: aqua;
+  border: 1px solid aqua;
+}
+
+.MatrixRow span {
+  padding: 1rem 1rem;
+}

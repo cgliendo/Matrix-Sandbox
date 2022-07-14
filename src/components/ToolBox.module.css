@@ -1,0 +1,21 @@
+.ToolBox {
+  position: absolute;
+  /* bottom: 1rem; */
+  /* top: 5rem; */
+  /* right: 0; */
+  bottom: 3rem;
+  display: flex;
+  /* flex-direction: column; */
+  /* background-color: aqua; */
+}
+.ToolBox button {
+  padding: 0.5rem;
+  background-color: rgb(53, 63, 63);
+  color: white;
+  border: 1px solid rgb(72, 72, 104);
+}
+
+.ToolBox button:active {
+  background-color: teal;
+  border: 1px solid darkblue;
+}
