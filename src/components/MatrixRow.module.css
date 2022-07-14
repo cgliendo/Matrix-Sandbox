@@ -15,7 +15,9 @@
 
 .MatrixRow {
   position: relative;
-  transition: top 0.25s ease-in-out;
-  transition: top 0.25s ease-out;
   top: 0;
+}
+
+.MatrixRow.moving {
+  transition: top 0.25s ease-out;
 }
