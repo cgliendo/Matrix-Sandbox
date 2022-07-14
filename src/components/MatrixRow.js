@@ -25,10 +25,7 @@ const MatrixRow = (props) => {
     // props.callback(props.id, props.index);
   };
 
-  const values = props.values.map((v) => (
-    //
-    <span>{v}</span>
-  ));
+  const values = props.values.map((v, i) => <span key={"value" + i}>{v}</span>);
 
   return (
     //
