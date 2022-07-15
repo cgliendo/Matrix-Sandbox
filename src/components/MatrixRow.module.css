@@ -2,11 +2,6 @@
   color: tomato;
 }
 
-.selected {
-  color: aqua;
-  border: 1px solid aqua;
-}
-
 .MatrixRow span,
 .MatrixRow p {
   padding: 1rem 1rem;
@@ -15,9 +10,17 @@
 
 .MatrixRow {
   position: relative;
+  border: 1px solid transparent;
   top: 0;
+  transition: border 0.25s, color 0.25s;
+}
+.selected {
+  color: aqua;
+  border: 1px solid aqua;
 }
 
-.MatrixRow.moving {
-  transition: top 0.25s ease-out;
+.moving {
+  transition: top 0.25s, border 0.25s, color 0.25s;
+
+  /* transition: top 0.25s, border 0.25s, color 0.25s; */
 }

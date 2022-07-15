@@ -5,7 +5,7 @@ import ToolBox from "./ToolBox";
 import styles from "./Matrix.module.css";
 import MatrixRow from "./MatrixRow";
 import rowStyles from "./MatrixRow.module.css";
-import { useState } from "react";
+import { useEffect, useLayoutEffect, useState } from "react";
 
 // import { Fragment } from "react";
 
@@ -25,33 +25,36 @@ const Workspace = () => {
     {
       name: "Interchange",
       callback: () => {
-        console.log("interchange");
-        console.log(selection);
-        const A = selection[0].element;
-        const B = selection[1].element;
-        let y0 = A.getBoundingClientRect().y;
-        let y1 = B.getBoundingClientRect().y;
+        if (!selection[0] || !selection[1]) return;
+        const A = selection[0];
+        const B = selection[1];
+        let y0 = A.element.getBoundingClientRect().y;
+        let y1 = B.element.getBoundingClientRect().y;
         // console.log(y0, y1, y1 - y0, y0 - y1);
-        const dy = y1 - y0;
-        A.classList.toggle(`${rowStyles.moving}`);
-        B.classList.toggle(`${rowStyles.moving}`);
-        A.style = `top: ${dy}px`;
-        B.style = `top: -${dy}px`;
+        const dy = y1 > y0 ? y1 - y0 : y0 - y1;
+        A.element.classList.toggle(`${rowStyles.moving}`);
+        B.element.classList.toggle(`${rowStyles.moving}`);
+        if (y1 > y0) {
+          A.element.style = `top: ${dy}px`;
+          B.element.style = `top: ${-dy}px`;
+        } else {
+          A.element.style = `top: ${-dy}px`;
+          B.element.style = `top: ${dy}px`;
+        }
+        //
+        const newMatrix = [...matrix];
+        const temp = newMatrix[A.id];
+        newMatrix[A.id] = newMatrix[B.id];
+        newMatrix[B.id] = temp;
         setTimeout(() => {
           setSelection([null, null]);
           setRowSelections([...rowSelection].fill(false));
-          const newMatrix = [...matrix];
-          const temp = newMatrix[0];
-          newMatrix[0] = newMatrix[1];
-          newMatrix[1] = temp;
+          A.element.removeAttribute("style");
+          B.element.removeAttribute("style");
+          A.element.classList.toggle(`${rowStyles.moving}`);
+          B.element.classList.toggle(`${rowStyles.moving}`);
           setMatrix(newMatrix);
-          A.classList.toggle(`${rowStyles.moving}`);
-          B.classList.toggle(`${rowStyles.moving}`);
-          A.style = "";
-          B.style = "";
-        }, 1000);
-        // A.style = "";
-        // B.style = "";
+        }, 750);
       },
     },
     {
@@ -67,6 +70,10 @@ const Workspace = () => {
       },
     },
   ];
+
+  useEffect(() => {
+    console.log("1");
+  }, matrix);
 
   const array = Array(matrix.length).fill(false, 0, matrix.length);
   const [rowSelection, setRowSelections] = useState(array);
