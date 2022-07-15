@@ -1,0 +1,29 @@
+.Modal {
+  position: absolute;
+  /* display: flex; */
+  z-index: 9;
+  background-color: #2a2f35;
+  height: fit-content;
+  width: 80%;
+  padding: 1rem;
+  border-radius: 1rem;
+  bottom: 5rem;
+  box-shadow: 0px 5px 10px rgba(0.2, 0.2, 0.2, 0.5);
+  font-size: 1rem;
+  /* bottom: 0; */
+  /* box-sizing: border-box; */
+}
+.buttons {
+  margin-top: 2rem;
+}
+.Modal p {
+  font-size: 1rem;
+}
+
+.Modal input {
+  width: 2rem;
+}
+
+.disabled {
+  display: none;
+}

@@ -3,6 +3,7 @@ import Matrix from "./Matrix";
 import MatrixEq from "./MatrixEq";
 import ToolBox from "./ToolBox";
 import styles from "./Matrix.module.css";
+import Modal from "./Modal";
 import MatrixRow from "./MatrixRow";
 import rowStyles from "./MatrixRow.module.css";
 import { useEffect, useLayoutEffect, useState } from "react";
@@ -10,19 +11,14 @@ import { useEffect, useLayoutEffect, useState } from "react";
 // import { Fragment } from "react";
 
 const Workspace = () => {
-  //   const matrix = [
-  //     [1, 2, 3, 4],
-  //     [2, 3, 4, 5],
-  //     [3, 4, 5, 6],
-  //   ];
-
-  const [matrix, setMatrix] = useState([
+  const [matrix, updateMatrix] = useState([
     [1, 2, 3, 4],
     [2, 3, 4, 5],
     [3, 4, 5, 6],
   ]);
 
   const [doingInterchange, updateInterchange] = useState(false);
+  const [doingReplace, updateReplace] = useState(false);
 
   const toolbox = [
     {
@@ -55,13 +51,14 @@ const Workspace = () => {
         const temp = newMatrix[A.id];
         newMatrix[A.id] = newMatrix[B.id];
         newMatrix[B.id] = temp;
-        setMatrix(newMatrix);
+        updateMatrix(newMatrix);
       },
     },
     {
       name: "Replace",
       callback: () => {
-        console.log("replace");
+        console.log("replace popup");
+        updateReplace(!doingReplace);
       },
     },
     {
@@ -71,6 +68,55 @@ const Workspace = () => {
       },
     },
   ];
+
+  const performReplacement = (value) => {
+    console.log("performing replacement:");
+    // console.log("Multiply by", value);
+
+    let parsedValue;
+    let divisionIndex = value.indexOf("/");
+    let numerator = parseInt(value.substring(0, divisionIndex));
+    let denominator = parseInt(
+      value.substring(divisionIndex + 1, value.length)
+    );
+    console.log("/ is in i:", divisionIndex);
+    console.log("numerator:", numerator);
+    console.log("denominator:", denominator);
+    parsedValue = numerator / denominator;
+    console.log(
+      "Replace",
+      matrix[selection[0].id],
+      "with",
+      parsedValue,
+      "times",
+      matrix[selection[1].id]
+    );
+
+    let newMatrix = [...matrix];
+    let newRow = [...matrix[selection[0].id]];
+
+    for (let i = 0; i < newRow.length; i++) {
+      console.log(
+        "replace",
+        newRow[i],
+        "with",
+        newRow[i] * parsedValue + matrix[selection[1].id][i]
+      );
+      newRow[i] = parsedValue * newRow[i] + matrix[selection[1].id][i];
+    }
+
+    newMatrix[selection[0].id] = newRow;
+    updateReplace(false);
+    selection[0] = null;
+    selection[1] = null;
+    rowSelection.fill(false);
+    updateMatrix(newMatrix);
+  };
+
+  const cancelReplacement = () => {
+    console.log("performing cancellation");
+  };
+
   //-------------------------------
   //Handle Interchange effect
   //-------------------------------
@@ -161,10 +207,17 @@ const Workspace = () => {
   return (
     <>
       <p className="question">Solve the following system of equations.</p>
+      <ToolBox data={toolbox} />
+      <Modal
+        submit={performReplacement}
+        cancel={cancelReplacement}
+        display={doingReplace}
+        A={selection[0]}
+        B={selection[1]}
+      ></Modal>
       <MatrixEq>
         <Matrix>{rows}</Matrix>
       </MatrixEq>
-      <ToolBox data={toolbox} />
       {/* <p className="prompt">_______ Row __</p> */}
     </>
   );

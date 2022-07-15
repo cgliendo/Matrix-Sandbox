@@ -15,7 +15,15 @@ const MatrixRow = (props) => {
     props.callback(e.target, props.index, props.index);
   };
 
-  const values = props.values.map((v, i) => <span key={"value" + i}>{v}</span>);
+  const values = props.values.map((v, i) => (
+    <span key={"value" + i}>
+      {v.toLocaleString(
+        undefined, // leave undefined to use the visitor's browser
+        // locale or a string like 'en-US' to override it.
+        { maximumFractionDigits: 1 }
+      )}
+    </span>
+  ));
 
   return (
     //
