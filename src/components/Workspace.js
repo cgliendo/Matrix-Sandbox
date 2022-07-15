@@ -25,36 +25,42 @@ const Workspace = () => {
     {
       name: "Interchange",
       callback: () => {
+        //-------------------------------
+        //check requirements
+        //-------------------------------
         if (!selection[0] || !selection[1]) return;
+        //-------------------------------
+        //Determine offsets
+        //-------------------------------
         const A = selection[0];
         const B = selection[1];
         let y0 = A.element.getBoundingClientRect().y;
         let y1 = B.element.getBoundingClientRect().y;
-        // console.log(y0, y1, y1 - y0, y0 - y1);
         const dy = y1 > y0 ? y1 - y0 : y0 - y1;
-        A.element.classList.toggle(`${rowStyles.moving}`);
-        B.element.classList.toggle(`${rowStyles.moving}`);
+
         if (y1 > y0) {
-          A.element.style = `top: ${dy}px`;
-          B.element.style = `top: ${-dy}px`;
+          //   A.element.style = `top: ${dy}px`;
+          //   B.element.style = `top: ${-dy}px`;
+          A["dy"] = -dy;
+          B["dy"] = dy;
         } else {
-          A.element.style = `top: ${-dy}px`;
-          B.element.style = `top: ${dy}px`;
+          A["dy"] = dy;
+          B["dy"] = -dy;
+          //   A.element.style = `top: ${-dy}px`;
+          //   B.element.style = `top: ${dy}px`;
         }
-        //
+        //-------------------------------
+        //Update Matrix
+        //-------------------------------
         const newMatrix = [...matrix];
         const temp = newMatrix[A.id];
         newMatrix[A.id] = newMatrix[B.id];
         newMatrix[B.id] = temp;
-        setTimeout(() => {
-          setSelection([null, null]);
-          setRowSelections([...rowSelection].fill(false));
-          A.element.removeAttribute("style");
-          B.element.removeAttribute("style");
-          A.element.classList.toggle(`${rowStyles.moving}`);
-          B.element.classList.toggle(`${rowStyles.moving}`);
-          setMatrix(newMatrix);
-        }, 750);
+        // A.element.removeAttribute("style");
+        // B.element.removeAttribute("style");
+        // A.element.classList.toggle(`${rowStyles.moving}`);
+        // B.element.classList.toggle(`${rowStyles.moving}`);
+        setMatrix(newMatrix);
       },
     },
     {
@@ -72,9 +78,33 @@ const Workspace = () => {
   ];
 
   useEffect(() => {
-    console.log("1");
+    if (!selection[0] || !selection[1]) return;
+    console.log("Matrix effect");
+    console.log("A: ", selection[0].dy);
+    console.log("B: ", selection[1].dy);
+    selection[0].element.style = `top: ${selection[1].dy}px`;
+    selection[1].element.style = `top: ${selection[0].dy}px`;
+    // selection[0].element.classList.toggle(`${rowStyles.swap}`);
+    // selection[1].element.classList.toggle(`${rowStyles.swap}`);
+    selection[0].element.classList.toggle(`${rowStyles.swap}`);
+    selection[1].element.classList.toggle(`${rowStyles.swap}`);
+    setTimeout(() => {
+      selection[0].element.style = `top: ${0}px`;
+      selection[1].element.style = `top: ${0}px`;
+      setTimeout(() => {
+        selection[0].element.removeAttribute("style");
+        selection[1].element.removeAttribute("style");
+        selection[0].element.classList.toggle(`${rowStyles.swap}`);
+        selection[1].element.classList.toggle(`${rowStyles.swap}`);
+        setSelection([null, null]);
+        setRowSelections([...rowSelection].fill(false));
+      }, 1000);
+    }, 150);
+    return () => {
+      console.log("here");
+    };
   }, matrix);
-
+  console.log("render");
   const array = Array(matrix.length).fill(false, 0, matrix.length);
   const [rowSelection, setRowSelections] = useState(array);
   //   const selection = [null, null];
