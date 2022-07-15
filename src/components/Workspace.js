@@ -21,6 +21,9 @@ const Workspace = () => {
     [2, 3, 4, 5],
     [3, 4, 5, 6],
   ]);
+
+  const [doingInterchange, updateInterchange] = useState(false);
+
   const toolbox = [
     {
       name: "Interchange",
@@ -29,6 +32,7 @@ const Workspace = () => {
         //check requirements
         //-------------------------------
         if (!selection[0] || !selection[1]) return;
+        updateInterchange(true);
         //-------------------------------
         //Determine offsets
         //-------------------------------
@@ -37,17 +41,12 @@ const Workspace = () => {
         let y0 = A.element.getBoundingClientRect().y;
         let y1 = B.element.getBoundingClientRect().y;
         const dy = y1 > y0 ? y1 - y0 : y0 - y1;
-
         if (y1 > y0) {
-          //   A.element.style = `top: ${dy}px`;
-          //   B.element.style = `top: ${-dy}px`;
           A["dy"] = -dy;
           B["dy"] = dy;
         } else {
           A["dy"] = dy;
           B["dy"] = -dy;
-          //   A.element.style = `top: ${-dy}px`;
-          //   B.element.style = `top: ${dy}px`;
         }
         //-------------------------------
         //Update Matrix
@@ -56,10 +55,6 @@ const Workspace = () => {
         const temp = newMatrix[A.id];
         newMatrix[A.id] = newMatrix[B.id];
         newMatrix[B.id] = temp;
-        // A.element.removeAttribute("style");
-        // B.element.removeAttribute("style");
-        // A.element.classList.toggle(`${rowStyles.moving}`);
-        // B.element.classList.toggle(`${rowStyles.moving}`);
         setMatrix(newMatrix);
       },
     },
@@ -76,16 +71,17 @@ const Workspace = () => {
       },
     },
   ];
-
+  //-------------------------------
+  //Handle Interchange effect
+  //-------------------------------
   useEffect(() => {
-    if (!selection[0] || !selection[1]) return;
-    console.log("Matrix effect");
-    console.log("A: ", selection[0].dy);
-    console.log("B: ", selection[1].dy);
+    // console.log("useEffect: interchange");
+    if (!selection[0] || !selection[1] || !doingInterchange) return;
+    // console.log("Matrix effect");
+    // console.log("A: ", selection[0].dy);
+    // console.log("B: ", selection[1].dy);
     selection[0].element.style = `top: ${selection[1].dy}px`;
     selection[1].element.style = `top: ${selection[0].dy}px`;
-    // selection[0].element.classList.toggle(`${rowStyles.swap}`);
-    // selection[1].element.classList.toggle(`${rowStyles.swap}`);
     selection[0].element.classList.toggle(`${rowStyles.swap}`);
     selection[1].element.classList.toggle(`${rowStyles.swap}`);
     setTimeout(() => {
@@ -98,13 +94,14 @@ const Workspace = () => {
         selection[1].element.classList.toggle(`${rowStyles.swap}`);
         setSelection([null, null]);
         setRowSelections([...rowSelection].fill(false));
+        updateInterchange(false);
       }, 1000);
     }, 150);
-    return () => {
-      console.log("here");
-    };
+    // return () => {
+
+    // };
   }, matrix);
-  console.log("render");
+  //   console.log("render");
   const array = Array(matrix.length).fill(false, 0, matrix.length);
   const [rowSelection, setRowSelections] = useState(array);
   //   const selection = [null, null];
@@ -116,24 +113,26 @@ const Workspace = () => {
     const sel = [...selection];
     row[i] = !row[i];
 
+    //------------------------------
+    //none filled
+    //------------------------------
     if (sel[0] === null) {
-      //------------------------------
-      //none filled
-      //------------------------------
       sel[0] = { id: id, element: e };
-    } else if (sel[0] !== null && sel[1] === null) {
-      //------------------------------
-      //first filled
-      //------------------------------
+    }
+    //------------------------------
+    //first filled
+    //------------------------------
+    else if (sel[0] !== null && sel[1] === null) {
       if (id === sel[0]["id"]) {
         sel[0] = null;
       } else {
         sel[1] = { id: id, element: e };
       }
-    } else {
-      //------------------------------
-      //both filled
-      //------------------------------
+    }
+    //------------------------------
+    //both filled
+    //------------------------------
+    else {
       if (id === sel[0]["id"]) {
         sel[0] = sel[1];
         sel[1] = null;
