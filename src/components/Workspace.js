@@ -23,6 +23,8 @@ const Workspace = () => {
     [math.fraction(3), math.fraction(4), math.fraction(5), math.fraction(6)],
   ]);
 
+  const [history, updateHistory] = useState([]);
+
   //-----------------------------------------
   // OPERATION FLAGS
   //-----------------------------------------
@@ -71,7 +73,7 @@ const Workspace = () => {
     {
       name: "Replace",
       callback: () => {
-        console.log("replace popup");
+        // console.log("replace popup");
         updateDisplayModal(true);
         updateDisplayModalID("replacement");
       },
@@ -79,28 +81,25 @@ const Workspace = () => {
     {
       name: "Scale",
       callback: () => {
-        console.log("scale");
+        // console.log("scale");
         updateDisplayModal(true);
         updateDisplayModalID("scale");
       },
     },
   ];
 
-  /**
-   * Perform Row Replacement
-   * @param {*} value Scale factor to multiply by.
-   */
-  const performReplacement = (value) => {
-    if (!selection[0] || !selection[1]) {
-      console.log("Need another row");
-      return;
-    }
-    console.log("performing replacement:");
-    // console.log("Multiply by", value, "which is a", typeof value);
+  const clearSelection = () => {
+    selection[0] = null;
+    selection[1] = null;
+    rowSelection.fill(false);
+  };
+  const clearSelectionAndModal = () => {
+    updateDisplayModal(false);
+    clearSelection();
+  };
 
+  const iterateRow = (callback, value) => {
     const parsedValue = math.fraction(value);
-    console.log("Parsed ", parsedValue, "which is a", typeof parsedValue);
-
     //-----------------------------------------
     // Copy values
     //-----------------------------------------
@@ -110,69 +109,48 @@ const Workspace = () => {
     // Perform Row Replacement Operations
     //------------------------------------------
     for (let i = 0; i < newRow.length; i++) {
-      //
-      console.log("selecetion value", matrix[selection[0].id][i]);
-      // math.multiply(selection[0][i]);
-      console.log(
-        "result",
-        math.add(
-          math.multiply(matrix[selection[1].id][i], parsedValue),
-          matrix[selection[0].id][i]
-        )
-      );
-      newRow[i] = math.add(
-        math.multiply(matrix[selection[1].id][i], parsedValue),
-        matrix[selection[0].id][i]
-      );
+      newRow[i] = callback(value, i);
     }
     //------------------------------------------
     // Submit Changes
     //------------------------------------------
     newMatrix[selection[0].id] = newRow;
-    updateDisplayModal(false);
-    selection[0] = null;
-    selection[1] = null;
-    rowSelection.fill(false);
+    clearSelectionAndModal();
     updateMatrix(newMatrix);
   };
 
-  const performScale = (value) => {
-    // value = "2";
-    if (!selection[0]) {
-      console.log("Please pick a row");
+  const actions = {
+    replacement: {
+      meetsReqs: () => selection[0] && selection[1],
+      invalidReqMessage: "Need two rows.",
+      callback: (value, i) => {
+        return math.add(
+          math.multiply(matrix[selection[1].id][i], value),
+          matrix[selection[0].id][i]
+        );
+      },
+      fn: function (callback, value) {
+        iterateRow(callback, value);
+      },
+    },
+    scale: {
+      meetsReqs: () => selection[0],
+      invalidReqMessage: "Need a row.",
+      callback: (value, i) => {
+        return math.multiply(matrix[selection[0].id][i], value);
+      },
+      fn: function (callback, value) {
+        iterateRow(callback, value);
+      },
+    },
+  };
+
+  const performAction = (action, value) => {
+    if (!action.meetsReqs()) {
+      console.log(action.invalidReqMessage);
       return;
     }
-    console.log("Perform Scale by", value);
-    const parsedValue = math.fraction(value);
-    console.log("Parsed ", parsedValue, "which is a", typeof parsedValue);
-
-    //-----------------------------------------
-    // Copy values
-    //-----------------------------------------
-    let newMatrix = [...matrix];
-    let newRow = [...matrix[selection[0].id]];
-    //------------------------------------------
-    // Perform Row Scale Operations
-    //------------------------------------------
-    for (let i = 0; i < newRow.length; i++) {
-      //
-      console.log("selecetion value", matrix[selection[0].id][i]);
-      // math.multiply(selection[0][i]);
-      console.log(
-        "result",
-        math.multiply(matrix[selection[0].id][i], parsedValue)
-      );
-      newRow[i] = math.multiply(matrix[selection[0].id][i], parsedValue);
-    }
-    //------------------------------------------
-    // Submit Changes
-    //------------------------------------------
-    newMatrix[selection[0].id] = newRow;
-    updateDisplayModal(false);
-    selection[0] = null;
-    selection[1] = null;
-    rowSelection.fill(false);
-    updateMatrix(newMatrix);
+    action.fn(action.callback, value);
   };
 
   /**
@@ -290,13 +268,17 @@ const Workspace = () => {
       <ModalReplacement
         A={selection[0]}
         B={selection[1]}
-        submit={performReplacement}
+        submit={(value) => {
+          performAction(actions.replacement, value);
+        }}
         cancel={cancelReplacement}
       ></ModalReplacement>
     ),
     scale: (
       <ModalScale
-        submit={performScale}
+        submit={(value) => {
+          performAction(actions.scale, value);
+        }}
         cancel={cancelScale}
         display={doingScale}
         A={selection[0]}

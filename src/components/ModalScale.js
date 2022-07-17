@@ -13,7 +13,7 @@ const ModalScale = (props) => {
       <button
         onClick={() => {
           const value = inputRef.current.value;
-          console.log("Request Replacement with", value);
+          //   console.log("Request Replacement with", value);
           props.submit(value);
         }}
       >
