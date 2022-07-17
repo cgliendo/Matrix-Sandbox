@@ -7,19 +7,28 @@ import Modal from "./Modal";
 import MatrixRow from "./MatrixRow";
 import rowStyles from "./MatrixRow.module.css";
 import { useEffect, useLayoutEffect, useState } from "react";
-
-// import { Fragment } from "react";
+import * as math from "mathjs";
 
 const Workspace = () => {
+  // const [matrix, updateMatrix] = useState([
+  //   ["1", "2", "3", "4"],
+  //   ["2", "3", "4", "5"],
+  //   ["3", "4", "5", "6"],
+  // ]);
   const [matrix, updateMatrix] = useState([
-    [1, 2, 3, 4],
-    [2, 3, 4, 5],
-    [3, 4, 5, 6],
+    [math.fraction(1), math.fraction(2), math.fraction(3), math.fraction(4)],
+    [math.fraction(2), math.fraction(3), math.fraction(4), math.fraction(5)],
+    [math.fraction(3), math.fraction(4), math.fraction(5), math.fraction(6)],
   ]);
 
+  //-----------------------------------------
+  // OPERATION FLAGS
+  //-----------------------------------------
   const [doingInterchange, updateInterchange] = useState(false);
   const [doingReplace, updateReplace] = useState(false);
-
+  //-----------------------------------------
+  // TOOLBOX BUTTONS AND CALLBACKS
+  //-----------------------------------------
   const toolbox = [
     {
       name: "Interchange",
@@ -69,42 +78,44 @@ const Workspace = () => {
     },
   ];
 
+  /**
+   * Perform Row Replacement
+   * @param {*} value Scale factor to multiply by.
+   */
   const performReplacement = (value) => {
     console.log("performing replacement:");
-    // console.log("Multiply by", value);
+    // console.log("Multiply by", value, "which is a", typeof value);
 
-    let parsedValue;
-    let divisionIndex = value.indexOf("/");
-    let numerator = parseInt(value.substring(0, divisionIndex));
-    let denominator = parseInt(
-      value.substring(divisionIndex + 1, value.length)
-    );
-    console.log("/ is in i:", divisionIndex);
-    console.log("numerator:", numerator);
-    console.log("denominator:", denominator);
-    parsedValue = numerator / denominator;
-    console.log(
-      "Replace",
-      matrix[selection[0].id],
-      "with",
-      parsedValue,
-      "times",
-      matrix[selection[1].id]
-    );
+    const parsedValue = math.fraction(value);
+    console.log("Parsed ", parsedValue, "which is a", typeof parsedValue);
 
+    //-----------------------------------------
+    // Copy values
+    //-----------------------------------------
     let newMatrix = [...matrix];
     let newRow = [...matrix[selection[0].id]];
-
+    //------------------------------------------
+    // Perform Row Replacement Operations
+    //------------------------------------------
     for (let i = 0; i < newRow.length; i++) {
+      //
+      console.log("selecetion value", matrix[selection[0].id][i]);
+      // math.multiply(selection[0][i]);
       console.log(
-        "replace",
-        newRow[i],
-        "with",
-        newRow[i] * parsedValue + matrix[selection[1].id][i]
+        "result",
+        math.add(
+          math.multiply(matrix[selection[0].id][i], parsedValue),
+          matrix[selection[1].id][i]
+        )
       );
-      newRow[i] = parsedValue * newRow[i] + matrix[selection[1].id][i];
+      newRow[i] = math.add(
+        math.multiply(matrix[selection[0].id][i], parsedValue),
+        matrix[selection[1].id][i]
+      );
     }
-
+    //------------------------------------------
+    // Submit Changes
+    //------------------------------------------
     newMatrix[selection[0].id] = newRow;
     updateReplace(false);
     selection[0] = null;
@@ -113,19 +124,21 @@ const Workspace = () => {
     updateMatrix(newMatrix);
   };
 
+  /**
+   * Cancel Replacement Operation and close
+   * modal window
+   */
   const cancelReplacement = () => {
     console.log("performing cancellation");
+    updateReplace(false);
   };
 
-  //-------------------------------
-  //Handle Interchange effect
-  //-------------------------------
+  //---------------------------------------------
+  // ROW INTERCHANGE ANIMATION EFFECT
+  //---------------------------------------------
   useEffect(() => {
     // console.log("useEffect: interchange");
     if (!selection[0] || !selection[1] || !doingInterchange) return;
-    // console.log("Matrix effect");
-    // console.log("A: ", selection[0].dy);
-    // console.log("B: ", selection[1].dy);
     selection[0].element.style = `top: ${selection[1].dy}px`;
     selection[1].element.style = `top: ${selection[0].dy}px`;
     selection[0].element.classList.toggle(`${rowStyles.swap}`);
@@ -141,18 +154,21 @@ const Workspace = () => {
         setSelection([null, null]);
         setRowSelections([...rowSelection].fill(false));
         updateInterchange(false);
-      }, 1000);
+      }, 350);
     }, 150);
     // return () => {
-
     // };
   }, matrix);
-  //   console.log("render");
+
+  //---------------------------------------------
+  // ROW SELECTION AND HIGHLIGHT FLAGS
+  //---------------------------------------------
   const array = Array(matrix.length).fill(false, 0, matrix.length);
   const [rowSelection, setRowSelections] = useState(array);
-  //   const selection = [null, null];
   const [selection, setSelection] = useState([null, null]);
-
+  //---------------------------------------------
+  // HANDLE SELECTION AND HIGHLIGHT
+  //---------------------------------------------
   const selectionCallback = (e, id, i) => {
     // console.log(id == selection[0]["id"]);
     const row = [...rowSelection];
@@ -160,13 +176,13 @@ const Workspace = () => {
     row[i] = !row[i];
 
     //------------------------------
-    //none filled
+    //Neither are filled
     //------------------------------
     if (sel[0] === null) {
       sel[0] = { id: id, element: e };
     }
     //------------------------------
-    //first filled
+    //Only one is chosen
     //------------------------------
     else if (sel[0] !== null && sel[1] === null) {
       if (id === sel[0]["id"]) {
@@ -176,7 +192,7 @@ const Workspace = () => {
       }
     }
     //------------------------------
-    //both filled
+    //Both slots are chosen
     //------------------------------
     else {
       if (id === sel[0]["id"]) {
@@ -193,6 +209,9 @@ const Workspace = () => {
     setRowSelections(row);
   };
 
+  //------------------------------
+  // RENDER ROWS FOR MATRIX
+  //------------------------------
   const rows = matrix.map((row, i) => (
     <MatrixRow
       key={i}
@@ -210,6 +229,9 @@ const Workspace = () => {
       <ToolBox data={toolbox} />
       <Modal
         submit={performReplacement}
+        // submit={() => {
+        //   console.log("disabled");
+        // }}
         cancel={cancelReplacement}
         display={doingReplace}
         A={selection[0]}

@@ -4,7 +4,7 @@
 
 .MatrixRow span,
 .MatrixRow p {
-  padding: 1rem 1rem;
+  padding: 0.5rem 0.5rem;
   pointer-events: none;
 }
 

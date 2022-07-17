@@ -13,7 +13,7 @@ const Modal = (props) => {
   return (
     <div className={classes}>
       {pre_message}
-      <input ref={inputRef}></input>
+      <input ref={inputRef} defaultValue="-1/2"></input>
       {post_message}
       <div className={styles.buttons}>
         <button
