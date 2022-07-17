@@ -6,6 +6,8 @@ import styles from "./Matrix.module.css";
 import Modal from "./Modal";
 import MatrixRow from "./MatrixRow";
 import rowStyles from "./MatrixRow.module.css";
+import ModalReplacement from "./ModalReplacement";
+import ModalScale from "./ModalScale";
 import { useEffect, useLayoutEffect, useState } from "react";
 import * as math from "mathjs";
 
@@ -26,6 +28,9 @@ const Workspace = () => {
   //-----------------------------------------
   const [doingInterchange, updateInterchange] = useState(false);
   const [doingReplace, updateReplace] = useState(false);
+  const [doingScale, updateScale] = useState(false);
+  const [displayModal, updateDisplayModal] = useState(false);
+  const [displayModalID, updateDisplayModalID] = useState("replacement");
   //-----------------------------------------
   // TOOLBOX BUTTONS AND CALLBACKS
   //-----------------------------------------
@@ -67,13 +72,16 @@ const Workspace = () => {
       name: "Replace",
       callback: () => {
         console.log("replace popup");
-        updateReplace(!doingReplace);
+        updateDisplayModal(true);
+        updateDisplayModalID("replacement");
       },
     },
     {
       name: "Scale",
       callback: () => {
         console.log("scale");
+        updateDisplayModal(true);
+        updateDisplayModalID("scale");
       },
     },
   ];
@@ -83,6 +91,10 @@ const Workspace = () => {
    * @param {*} value Scale factor to multiply by.
    */
   const performReplacement = (value) => {
+    if (!selection[0] || !selection[1]) {
+      console.log("Need another row");
+      return;
+    }
     console.log("performing replacement:");
     // console.log("Multiply by", value, "which is a", typeof value);
 
@@ -104,20 +116,59 @@ const Workspace = () => {
       console.log(
         "result",
         math.add(
-          math.multiply(matrix[selection[0].id][i], parsedValue),
-          matrix[selection[1].id][i]
+          math.multiply(matrix[selection[1].id][i], parsedValue),
+          matrix[selection[0].id][i]
         )
       );
       newRow[i] = math.add(
-        math.multiply(matrix[selection[0].id][i], parsedValue),
-        matrix[selection[1].id][i]
+        math.multiply(matrix[selection[1].id][i], parsedValue),
+        matrix[selection[0].id][i]
       );
     }
     //------------------------------------------
     // Submit Changes
     //------------------------------------------
     newMatrix[selection[0].id] = newRow;
-    updateReplace(false);
+    updateDisplayModal(false);
+    selection[0] = null;
+    selection[1] = null;
+    rowSelection.fill(false);
+    updateMatrix(newMatrix);
+  };
+
+  const performScale = (value) => {
+    // value = "2";
+    if (!selection[0]) {
+      console.log("Please pick a row");
+      return;
+    }
+    console.log("Perform Scale by", value);
+    const parsedValue = math.fraction(value);
+    console.log("Parsed ", parsedValue, "which is a", typeof parsedValue);
+
+    //-----------------------------------------
+    // Copy values
+    //-----------------------------------------
+    let newMatrix = [...matrix];
+    let newRow = [...matrix[selection[0].id]];
+    //------------------------------------------
+    // Perform Row Scale Operations
+    //------------------------------------------
+    for (let i = 0; i < newRow.length; i++) {
+      //
+      console.log("selecetion value", matrix[selection[0].id][i]);
+      // math.multiply(selection[0][i]);
+      console.log(
+        "result",
+        math.multiply(matrix[selection[0].id][i], parsedValue)
+      );
+      newRow[i] = math.multiply(matrix[selection[0].id][i], parsedValue);
+    }
+    //------------------------------------------
+    // Submit Changes
+    //------------------------------------------
+    newMatrix[selection[0].id] = newRow;
+    updateDisplayModal(false);
     selection[0] = null;
     selection[1] = null;
     rowSelection.fill(false);
@@ -130,7 +181,15 @@ const Workspace = () => {
    */
   const cancelReplacement = () => {
     console.log("performing cancellation");
-    updateReplace(false);
+    updateDisplayModal(false);
+  };
+  /**
+   * Cancel Scale Operation and close
+   * modal window
+   */
+  const cancelScale = () => {
+    console.log("performing cancellation");
+    updateDisplayModal(false);
   };
 
   //---------------------------------------------
@@ -223,20 +282,41 @@ const Workspace = () => {
     />
   ));
 
-  return (
-    <>
-      <p className="question">Solve the following system of equations.</p>
-      <ToolBox data={toolbox} />
-      <Modal
-        submit={performReplacement}
-        // submit={() => {
-        //   console.log("disabled");
-        // }}
-        cancel={cancelReplacement}
-        display={doingReplace}
+  //------------------------------
+  // MODAL WINDOWS
+  //------------------------------
+  const modalWindows = {
+    replacement: (
+      <ModalReplacement
         A={selection[0]}
         B={selection[1]}
-      ></Modal>
+        submit={performReplacement}
+        cancel={cancelReplacement}
+      ></ModalReplacement>
+    ),
+    scale: (
+      <ModalScale
+        submit={performScale}
+        cancel={cancelScale}
+        display={doingScale}
+        A={selection[0]}
+        B={selection[1]}
+      ></ModalScale>
+    ),
+  };
+
+  const modalReplacement = <div>hello</div>;
+  const modalScale = <div>hello</div>;
+
+  return (
+    <>
+      <p className="question">
+        Reduce the following matrix to <i>Reduced Row Echelon form</i>.
+      </p>
+      <ToolBox data={toolbox} />
+      <Modal display={displayModal} cancel={cancelReplacement}>
+        {modalWindows[displayModalID]}
+      </Modal>
       <MatrixEq>
         <Matrix>{rows}</Matrix>
       </MatrixEq>
