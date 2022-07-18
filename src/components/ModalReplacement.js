@@ -16,7 +16,7 @@ const ModalReplacement = (props) => {
     <div className={classes}>
       {" "}
       {pre_message}
-      <input ref={inputRef} defaultValue="-1/2"></input>
+      <input ref={inputRef} defaultValue="-2"></input>
       {post_message}
       <div className={styles.buttons}>
         <button

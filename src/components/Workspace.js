@@ -25,6 +25,17 @@ const Workspace = () => {
 
   const [history, updateHistory] = useState([]);
 
+  const appendHistory = (action, value) => {
+    // let newHistory = [...history].concat([
+    //   [action, value, [{ id: selection[0].id }, { id: selection[1].id }]],
+    // ]);
+    let newHistory = [...history].concat([matrix]);
+    console.log(newHistory);
+    updateHistory(newHistory);
+  };
+
+  // console.log(matrix);
+
   //-----------------------------------------
   // OPERATION FLAGS
   //-----------------------------------------
@@ -37,6 +48,21 @@ const Workspace = () => {
   // TOOLBOX BUTTONS AND CALLBACKS
   //-----------------------------------------
   const toolbox = [
+    {
+      name: "Previous",
+      callback: () => {
+        // console.table(history);
+        // const [action, value, sel] = history[history.length - 1];
+        // selection[0] = sel[0];
+        // selection[1] = sel[1];
+        // undoAction(action, -value);
+        if (history.length === 0) {
+          return;
+        }
+        console.log(history);
+        updateMatrix(history.pop());
+      },
+    },
     {
       name: "Interchange",
       callback: () => {
@@ -100,36 +126,50 @@ const Workspace = () => {
 
   const iterateRow = (callback, value) => {
     const parsedValue = math.fraction(value);
+    // console.log("VALUE", parsedValue, "is type of", typeof parsedValue);
+    // console.log(matrix);
     //-----------------------------------------
     // Copy values
     //-----------------------------------------
     let newMatrix = [...matrix];
+    // let newRow = [...matrix[selection[0].id]];
     let newRow = [...matrix[selection[0].id]];
+    // console.log(newRow[0], newRow[1], newRow[2]);
     //------------------------------------------
     // Perform Row Replacement Operations
     //------------------------------------------
     for (let i = 0; i < newRow.length; i++) {
-      newRow[i] = callback(value, i);
+      // console.log("prevValue:", newRow[i]);
+      newRow[i] = callback(parsedValue, i);
+      // console.log("\tGOT", newRow[i]);
     }
     //------------------------------------------
     // Submit Changes
     //------------------------------------------
     newMatrix[selection[0].id] = newRow;
+    // console.log("\tNEWROW", newRow);
+    // console.log("\tNEWMATRIX", newMatrix);
     clearSelectionAndModal();
     updateMatrix(newMatrix);
+    // console.log(matrix);
   };
 
   const actions = {
     replacement: {
+      name: "Replacement",
       meetsReqs: () => selection[0] && selection[1],
       invalidReqMessage: "Need two rows.",
       callback: (value, i) => {
-        return math.add(
-          math.multiply(matrix[selection[1].id][i], value),
-          matrix[selection[0].id][i]
+        return math.fraction(
+          math
+            .add(
+              math.multiply(matrix[selection[1].id][i], value),
+              matrix[selection[0].id][i]
+            )
+            .toString()
         );
       },
-      fn: function (callback, value) {
+      do: function (callback, value) {
         iterateRow(callback, value);
       },
     },
@@ -145,12 +185,22 @@ const Workspace = () => {
     },
   };
 
-  const performAction = (action, value) => {
+  const doAction = (action, value) => {
     if (!action.meetsReqs()) {
       console.log(action.invalidReqMessage);
       return;
     }
-    action.fn(action.callback, value);
+    appendHistory(action, value);
+    action.do(action.callback, value);
+  };
+
+  const undoAction = (action, value) => {
+    if (!action.meetsReqs()) {
+      console.log(action.invalidReqMessage);
+      return;
+    }
+    // appendHistory(action, value);
+    action.do(action.callback, -value);
   };
 
   /**
@@ -158,7 +208,7 @@ const Workspace = () => {
    * modal window
    */
   const cancelReplacement = () => {
-    console.log("performing cancellation");
+    // console.log("performing cancellation");
     updateDisplayModal(false);
   };
   /**
@@ -166,7 +216,7 @@ const Workspace = () => {
    * modal window
    */
   const cancelScale = () => {
-    console.log("performing cancellation");
+    // console.log("performing cancellation");
     updateDisplayModal(false);
   };
 
@@ -269,7 +319,7 @@ const Workspace = () => {
         A={selection[0]}
         B={selection[1]}
         submit={(value) => {
-          performAction(actions.replacement, value);
+          doAction(actions.replacement, value);
         }}
         cancel={cancelReplacement}
       ></ModalReplacement>
@@ -277,7 +327,7 @@ const Workspace = () => {
     scale: (
       <ModalScale
         submit={(value) => {
-          performAction(actions.scale, value);
+          doAction(actions.scale, value);
         }}
         cancel={cancelScale}
         display={doingScale}
@@ -286,9 +336,6 @@ const Workspace = () => {
       ></ModalScale>
     ),
   };
-
-  const modalReplacement = <div>hello</div>;
-  const modalScale = <div>hello</div>;
 
   return (
     <>
