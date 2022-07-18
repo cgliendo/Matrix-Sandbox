@@ -1,9 +1,12 @@
 .ToolBox {
   position: absolute;
-  bottom: 10rem;
+  bottom: 5rem;
   display: flex;
+  flex-wrap: wrap;
+  justify-content: center;
 }
 .ToolBox button {
+  font-size: 1.25rem;
   padding: 0.5rem;
   background-color: rgb(53, 63, 63);
   color: white;
