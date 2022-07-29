@@ -1,17 +1,21 @@
+:root {
+  --black: #0e1016;
+  --green: rgb(118, 215, 49);
+  --blue: rgb(40, 119, 216);
+  --blue200: rgb(19, 76, 146);
+  --white: #efefef;
+}
+
 .App {
-  /* padding: 1rem; */
   text-align: center;
   background-color: #282c34;
   min-height: 100vh;
-  /* margin: 0; */
   font-size: calc(10px + 2vmin);
-  color: white;
+  color: var(--white);
   box-sizing: border-box;
   display: flex;
   flex-direction: column;
   align-items: center stretch;
-  /* justify-items: center; */
-  /* justify-content: center; */
 }
 header {
   height: 8vh;
@@ -19,9 +23,7 @@ header {
   justify-content: center;
 }
 main {
-  /* height: 92vh; */
   height: 100vh;
-  /* overflow-y: hidden; */
   justify-self: stretch;
   display: flex;
   flex-direction: column;
@@ -32,6 +34,8 @@ main {
 .question {
   position: absolute;
   top: 1rem;
+  padding-left: 2rem;
+  padding-right: 2rem;
 }
 .prompt {
   position: relative;
@@ -44,5 +48,17 @@ header h1 {
   font-size: 1rem;
 }
 .Window {
-  background-color: #17191d;
+  background-color: var(--black);
+}
+
+button {
+  background-color: var(--blue);
+  border: 1px solid black;
+  padding: 0.5rem 1rem;
+  margin: 0.15rem;
+  border-radius: 0.5rem;
+  font-size: 1.25rem;
+}
+button:active {
+  background-color: var(--blue200);
 }

@@ -1,0 +1,20 @@
+/*Created by bash script*/
+.ButtonGroup {
+  display: flex;
+}
+
+.ButtonGroup button {
+  margin-right: 0;
+  margin-left: 0;
+  margin-top: 0.5rem;
+  padding: 0.25rem;
+  width: 100%;
+}
+.ButtonGroup button:active {
+}
+.ButtonGroup > button:first-child {
+  border-radius: 0.5rem 0 0 0.5rem;
+}
+.ButtonGroup > button:last-child {
+  border-radius: 0 0.5rem 0.5rem 0;
+}

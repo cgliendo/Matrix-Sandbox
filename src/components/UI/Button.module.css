@@ -1,0 +1,9 @@
+/*Created by bash script*/
+.Button button {
+  /* background-color: tomato; */
+  padding: 1rem;
+  margin-top: 0.5rem;
+  padding: 0.25rem;
+  border-radius: 0.5rem;
+  /* border-radius: 1rem; */
+}

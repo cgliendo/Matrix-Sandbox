@@ -1,19 +1,12 @@
 .ToolBox {
+  padding-left: 2rem;
+  padding-right: 2rem;
+  width: 100%;
   position: absolute;
-  bottom: 5rem;
+  bottom: 3rem;
   display: flex;
   flex-wrap: wrap;
+  /* overflow-x: scroll; */
   justify-content: center;
-}
-.ToolBox button {
-  font-size: 1.25rem;
-  padding: 0.5rem;
-  background-color: rgb(53, 63, 63);
-  color: white;
-  border: 1px solid rgb(72, 72, 104);
-}
-
-.ToolBox button:active {
-  background-color: teal;
-  border: 1px solid darkblue;
+  box-sizing: border-box;
 }

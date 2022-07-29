@@ -6,9 +6,9 @@ import Workspace from "./components/Workspace";
 function App() {
   return (
     <div className="App">
-      <header className="Header">
+      {/* <header className="Header">
         <h1>Matrix Sandbox</h1>
-      </header>
+      </header> */}
       <main className="Window">
         <Workspace />
       </main>

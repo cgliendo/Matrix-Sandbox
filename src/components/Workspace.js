@@ -1,22 +1,44 @@
 //
-import Matrix from "./Matrix";
-import MatrixEq from "./MatrixEq";
-import ToolBox from "./ToolBox";
-import styles from "./Matrix.module.css";
-import Modal from "./Modal";
-import MatrixRow from "./MatrixRow";
-import rowStyles from "./MatrixRow.module.css";
-import ModalReplacement from "./ModalReplacement";
-import ModalScale from "./ModalScale";
-import { useEffect, useLayoutEffect, useState } from "react";
-import * as math from "mathjs";
+import Matrix from './Matrix';
+import MatrixEq from './MatrixEq';
+import ToolBox from './ToolBox';
+import styles from './Matrix.module.css';
+import Modal from './UI/Modal';
+import MatrixRow from './MatrixRow';
+import rowStyles from './MatrixRow.module.css';
+import ModalReplacement from './ModalReplacement';
+import ModalScale from './ModalScale';
+import ModalCheck from './ModalCheck';
+// import { getPerson } from './Hello';
+
+import { useEffect, useLayoutEffect, useState } from 'react';
+import * as math from 'mathjs';
 
 const Workspace = () => {
-  const [matrix, updateMatrix] = useState([
-    [math.fraction(1), math.fraction(2), math.fraction(3)],
+  // getPerson();
+
+  const questions = [
+    'Convert the system of equations into a matrix',
+    'Reduce the following matrix to Row Echelon form',
+    'Reduce the following matrix to Reduced Row Echelon form',
+    'How many solutions does this matrix have?',
+  ];
+
+  const matrixC = math.matrix([
+    [math.fraction(0), math.fraction(2), math.fraction(3)],
     [math.fraction(2), math.fraction(3), math.fraction(4)],
-    [math.fraction(3), math.fraction(5), math.fraction(6)],
+    [math.fraction(1), math.fraction(5), math.fraction(6)],
   ]);
+
+  // console.log(matrixC);
+
+  // const matrixA = [
+  //   [math.fraction(0), math.fraction(2), math.fraction(3)],
+  //   [math.fraction(2), math.fraction(3), math.fraction(4)],
+  //   [math.fraction(1), math.fraction(5), math.fraction(6)],
+  // ];
+
+  const [matrix, updateMatrix] = useState(matrixC._data);
 
   const answer = [
     [math.fraction(1), math.fraction(0), math.fraction(0)],
@@ -26,12 +48,12 @@ const Workspace = () => {
 
   const [history, updateHistory] = useState([]);
 
-  const appendHistory = (action, value) => {
+  const appendHistory = () => {
     // let newHistory = [...history].concat([
     //   [action, value, [{ id: selection[0].id }, { id: selection[1].id }]],
     // ]);
     let newHistory = [...history].concat([matrix]);
-    console.log(newHistory);
+    // console.log(newHistory);
     updateHistory(newHistory);
   };
 
@@ -43,14 +65,15 @@ const Workspace = () => {
   const [doingInterchange, updateInterchange] = useState(false);
   const [doingReplace, updateReplace] = useState(false);
   const [doingScale, updateScale] = useState(false);
+  const [doingCheck, updateCheck] = useState(true);
   const [displayModal, updateDisplayModal] = useState(false);
-  const [displayModalID, updateDisplayModalID] = useState("replacement");
+  const [displayModalID, updateDisplayModalID] = useState('replacement');
   //-----------------------------------------
   // TOOLBOX BUTTONS AND CALLBACKS
   //-----------------------------------------
   const toolbox = [
     {
-      name: "Undo",
+      name: 'Undo',
       callback: () => {
         // console.table(history);
         // const [action, value, sel] = history[history.length - 1];
@@ -60,18 +83,19 @@ const Workspace = () => {
         if (history.length === 0) {
           return;
         }
-        console.log(history);
+        // console.log(history);
         updateMatrix(history.pop());
       },
     },
     {
-      name: "Swap",
+      name: 'Swap',
       callback: () => {
         //-------------------------------
         //check requirements
         //-------------------------------
         if (!selection[0] || !selection[1]) return;
         updateInterchange(true);
+        appendHistory();
         //-------------------------------
         //Determine offsets
         //-------------------------------
@@ -81,11 +105,11 @@ const Workspace = () => {
         let y1 = B.element.getBoundingClientRect().y;
         const dy = y1 > y0 ? y1 - y0 : y0 - y1;
         if (y1 > y0) {
-          A["dy"] = -dy;
-          B["dy"] = dy;
+          A['dy'] = -dy;
+          B['dy'] = dy;
         } else {
-          A["dy"] = dy;
-          B["dy"] = -dy;
+          A['dy'] = dy;
+          B['dy'] = -dy;
         }
         //-------------------------------
         //Update Matrix
@@ -98,37 +122,40 @@ const Workspace = () => {
       },
     },
     {
-      name: "Replace",
+      name: 'Replace',
       callback: () => {
         // console.log("replace popup");
         updateDisplayModal(true);
-        updateDisplayModalID("replacement");
+        updateDisplayModalID('replacement');
       },
     },
     {
-      name: "Scale",
+      name: 'Scale',
       callback: () => {
         // console.log("scale");
         updateDisplayModal(true);
-        updateDisplayModalID("scale");
+        updateDisplayModalID('scale');
       },
     },
     {
-      name: "Check",
+      name: 'Check',
       callback: () => {
         // console.log("scale");
         // updateDisplayModal(true);
         // updateDisplayModalID("scale");
+        updateCheck(true);
+        updateDisplayModal(true);
+        updateDisplayModalID('check');
         for (let i = 0; i < matrix.length; i++) {
           for (let j = 0; j < matrix[i].length; j++) {
             if (answer[i][j].toString() !== matrix[i][j].toString()) {
-              console.log("Mismatch at", i, j);
+              console.log('Mismatch at', i, j);
               console.log(answer[i][j], matrix[i][j]);
               return;
             }
           }
         }
-        console.log("CORRECT!");
+        console.log('CORRECT!');
       },
     },
   ];
@@ -160,9 +187,9 @@ const Workspace = () => {
 
   const actions = {
     replacement: {
-      name: "Replacement",
+      name: 'Replacement',
       meetsReqs: () => selection[0] && selection[1],
-      invalidReqMessage: "Need two rows.",
+      invalidReqMessage: 'Need two rows.',
       callback: (value, i) => {
         return math.fraction(
           math
@@ -179,7 +206,7 @@ const Workspace = () => {
     },
     scale: {
       meetsReqs: () => selection[0],
-      invalidReqMessage: "Need a row.",
+      invalidReqMessage: 'Need a row.',
       callback: (value, i) => {
         return math.multiply(matrix[selection[0].id][i], value);
       },
@@ -194,7 +221,7 @@ const Workspace = () => {
       console.log(action.invalidReqMessage);
       return;
     }
-    appendHistory(action, value);
+    appendHistory();
     action.do(action.callback, value);
   };
 
@@ -221,8 +248,8 @@ const Workspace = () => {
       selection[0].element.style = `top: ${0}px`;
       selection[1].element.style = `top: ${0}px`;
       setTimeout(() => {
-        selection[0].element.removeAttribute("style");
-        selection[1].element.removeAttribute("style");
+        selection[0].element.removeAttribute('style');
+        selection[1].element.removeAttribute('style');
         selection[0].element.classList.toggle(`${rowStyles.swap}`);
         selection[1].element.classList.toggle(`${rowStyles.swap}`);
         setSelection([null, null]);
@@ -259,7 +286,7 @@ const Workspace = () => {
     //Only one is chosen
     //------------------------------
     else if (sel[0] !== null && sel[1] === null) {
-      if (id === sel[0]["id"]) {
+      if (id === sel[0]['id']) {
         sel[0] = null;
       } else {
         sel[1] = { id: id, element: e };
@@ -269,10 +296,10 @@ const Workspace = () => {
     //Both slots are chosen
     //------------------------------
     else {
-      if (id === sel[0]["id"]) {
+      if (id === sel[0]['id']) {
         sel[0] = sel[1];
         sel[1] = null;
-      } else if (id === sel[1]["id"]) {
+      } else if (id === sel[1]['id']) {
         sel[1] = null;
       } else {
         sel[0] = sel[1] = null;
@@ -289,13 +316,26 @@ const Workspace = () => {
   const rows = matrix.map((row, i) => (
     <MatrixRow
       key={i}
-      id={"row" + i}
+      id={'row' + i}
       index={i}
       selected={rowSelection[i]}
       callback={selectionCallback}
       values={row}
     />
   ));
+
+  // console.log(matrixC._data);
+
+  // const rows = matrixC._data.map((row, i) => (
+  //   <MatrixRow
+  //     key={i}
+  //     id={'row' + i}
+  //     index={i}
+  //     selected={rowSelection[i]}
+  //     callback={selectionCallback}
+  //     values={row}
+  //   />
+  // ));
 
   //------------------------------
   // MODAL WINDOWS
@@ -322,15 +362,27 @@ const Workspace = () => {
         B={selection[1]}
       ></ModalScale>
     ),
+    check: (
+      <ModalCheck
+        // display={doingCheck}
+        submit={clearSelectionAndModal}
+      ></ModalCheck>
+    ),
   };
+  const checkModalColor =
+    displayModalID === 'check' ? { backgroundColor: 'greenyellow' } : {};
 
   return (
     <>
-      <p className="question">
+      <p className='question'>
         Reduce the following matrix to <i>Reduced Row Echelon form</i>.
       </p>
       <ToolBox data={toolbox} />
-      <Modal display={displayModal} cancel={clearSelectionAndModal}>
+      <Modal
+        display={displayModal}
+        style={checkModalColor}
+        cancel={clearSelectionAndModal}
+      >
         {modalWindows[displayModalID]}
       </Modal>
       <MatrixEq>
