@@ -255,7 +255,7 @@ const Workspace = () => {
     }, 150);
     // return () => {
     // };
-  }, matrices);
+  }, [matrices, doingInterchange]);
 
   //---------------------------------------------
   // ROW SELECTION AND HIGHLIGHT FLAGS
