@@ -1,22 +1,26 @@
 .Modal {
   position: absolute;
-  /* display: flex; */
   z-index: 9;
-  background-color: #2a2f35;
+  background-color: var(--gray900);
   height: fit-content;
   width: 80%;
-  padding: 1rem;
+  padding: 0.75rem 1rem;
   border-radius: 1rem;
-  bottom: 5rem;
+  bottom: 3rem;
+  /* bottom: -30rem; */
   box-shadow: 0px 5px 10px rgba(0.2, 0.2, 0.2, 0.5);
-  font-size: 1.25rem;
-  /* bottom: 0; */
-  /* box-sizing: border-box; */
-}
-.buttons {
-  margin-top: 2rem;
+  font-size: 1rem;
+  /* display: none; */
+  visibility: hidden;
 }
 
+.buttons {
+  /* margin-top: 2rem; */
+}
+
+.content {
+  padding: 0.5rem;
+}
 .Modal input {
   width: 4rem;
   font-size: 1.25rem;
@@ -25,6 +29,31 @@
   border: 1px solid transparent;
 }
 
+.show {
+  animation: slidein 0.3s;
+  visibility: visible;
+}
+.hide {
+  animation: slideout 0.3s;
+}
 .disabled {
-  display: none;
+  background-color: aqua;
+}
+
+@keyframes slidein {
+  from {
+    bottom: -2rem;
+  }
+  to {
+    bottom: 3rem;
+  }
+}
+
+@keyframes slideout {
+  from {
+    bottom: 3rem;
+  }
+  to {
+    bottom: -2rem;
+  }
 }

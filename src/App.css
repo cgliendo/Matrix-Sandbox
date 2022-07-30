@@ -1,9 +1,13 @@
 :root {
   --black: #0e1016;
-  --green: rgb(118, 215, 49);
-  --blue: rgb(40, 119, 216);
-  --blue200: rgb(19, 76, 146);
+  --green: #8bc34a;
+  --yellow: #ffeb3b;
+  --orange: #ffc107;
+  --blue: #03a9f4;
+  --blue200: #1e88e5;
   --white: #efefef;
+  --gray: #607d8b;
+  --gray900: #263238;
 }
 
 .App {

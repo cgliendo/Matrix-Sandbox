@@ -1,0 +1,17 @@
+/*Created by bash script*/
+.BracketLayout {
+  display: flex;
+  gap: 5px;
+  color: aliceblue;
+  padding: 2rem;
+  /* box-sizing: content-box; */
+  /* overflow-x: hidden; */
+}
+
+.BracketLayout p {
+  padding: 0 2rem;
+}
+.BracketLayout img {
+  width: 100%;
+  /* text-align: center; */
+}

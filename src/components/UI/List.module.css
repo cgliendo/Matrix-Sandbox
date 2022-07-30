@@ -1,0 +1,16 @@
+ul.list {
+  display: flex;
+}
+
+ul.row {
+  flex-direction: row;
+  flex-wrap: wrap;
+  width: 100%;
+  gap: 1rem;
+  padding: 0;
+  box-sizing: border-box;
+}
+
+ul.list li {
+  list-style: none;
+}

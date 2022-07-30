@@ -1,0 +1,9 @@
+.FlexBox {
+  display: flex;
+  flex-wrap: wrap;
+  gap: 2rem;
+}
+
+.FlexBox.space {
+  justify-content: space-between;
+}

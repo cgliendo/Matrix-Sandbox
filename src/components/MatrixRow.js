@@ -1,13 +1,13 @@
 //
 
-import { useEffect, useLayoutEffect, useState } from "react";
-import styles from "./MatrixRow.module.css";
-import { createRef } from "react";
-import Fraction from "./Fraction";
+import { useEffect, useLayoutEffect, useState } from 'react';
+import styles from './MatrixRow.module.css';
+import { createRef } from 'react';
+import Fraction from './Fraction';
 const MatrixRow = (props) => {
   //   const [selected, setSelection] = useState(false);
   const classes = `${styles.MatrixRow} ${
-    props.selected ? styles.selected : ""
+    props.selected ? styles.selectedA : ''
   }`;
 
   const ref = createRef();
@@ -26,12 +26,12 @@ const MatrixRow = (props) => {
     // </span>
 
     //this key is replicated
-    <Fraction key={"fraction" + i} value={v} />
+    <Fraction key={'fraction' + i} value={v} />
   ));
 
   return (
     //
-    <p
+    <div
       //   style={{ top: 0 }}
       onClick={(e) => {
         onClickHandler(e);
@@ -40,7 +40,7 @@ const MatrixRow = (props) => {
       className={classes}
     >
       {values}
-    </p>
+    </div>
   );
 };
 

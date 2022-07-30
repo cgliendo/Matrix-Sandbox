@@ -1,5 +1,5 @@
 .Matrix {
-  padding: 0.25rem 1rem;
+  padding: 1rem 1rem;
   border: 1px solid tomato;
   background-image: linear-gradient(#efefef, #efefef),
     linear-gradient(#efefef, #efefef), linear-gradient(#efefef, #efefef),
@@ -18,6 +18,6 @@
   border-radius: 2rem;
 }
 
-.Matrix p {
-  padding: 0 2rem;
+.Matrix {
+  width: 100%;
 }

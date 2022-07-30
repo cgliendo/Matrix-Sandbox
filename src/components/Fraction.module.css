@@ -1,4 +1,6 @@
 .Fraction {
-  background-color: tomato;
-  display: inline;
+  /* background-color: tomato; */
+  width: 3rem;
+  pointer-events: none;
+  text-align: center;
 }

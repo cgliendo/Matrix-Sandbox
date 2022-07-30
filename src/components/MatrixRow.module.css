@@ -1,22 +1,26 @@
 .MatrixRow {
-  color: tomato;
-}
-
-.MatrixRow span,
-.MatrixRow p {
-  padding: 0.5rem 0.5rem;
-  pointer-events: none;
-}
-
-.MatrixRow {
+  display: flex;
+  flex-direction: row;
+  justify-content: space-around;
+  font-size: 1.75rem;
+  margin: 1rem 0;
+  /* background-color: #00bcd4; */
+  /* justify-content: center; */
+  /* justify-items: space-between; */
   position: relative;
   border: 1px solid transparent;
   /* top: 0; */
   transition: top 0.25s, border 0.25s, color 0.25s;
 }
-.selected {
-  color: aqua;
-  border: 1px solid aqua;
+
+.selectedA {
+  color: var(--orange);
+  border: 1px solid var(--orange);
+}
+
+.selectedB {
+  color: #00bcd4;
+  border: 1px solid #00bcd4;
 }
 
 .swap {
