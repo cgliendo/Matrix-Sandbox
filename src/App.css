@@ -9,7 +9,9 @@
   --gray: #607d8b;
   --gray900: #263238;
 }
-
+body {
+  background-color: var(--black);
+}
 .App {
   text-align: center;
   background-color: #282c34;
@@ -22,19 +24,35 @@
   align-items: center stretch;
 }
 header {
-  height: 8vh;
+  /* height: 10vh; */
+  height: 3rem;
   display: flex;
-  justify-content: center;
+  justify-content: space-between;
+  padding: 0.5rem;
+  background-color: var(--blue);
+  box-sizing: border-box;
 }
 main {
-  height: 100vh;
+  min-height: calc(100vh - 3rem);
+  /* min-height: 90vh; */
+  padding: 0rem;
   justify-self: stretch;
   display: flex;
   flex-direction: column;
-  justify-content: center;
+  /* justify-content: center; */
   align-items: center;
   position: relative;
 }
+main p {
+  /* font-size: 1rem; */
+}
+
+.lesson {
+  padding: 0.5rem 0.5rem;
+  text-align: left;
+  position: relative;
+}
+
 .question {
   position: absolute;
   top: 1rem;
@@ -45,7 +63,8 @@ main {
   position: relative;
   top: 2rem;
 }
-header h1 {
+header h1,
+header h2 {
   padding-top: 1rem;
   padding-bottom: 1rem;
   margin: 0;
@@ -61,7 +80,7 @@ button {
   padding: 0.5rem 1rem;
   margin: 0.15rem;
   border-radius: 0.5rem;
-  font-size: 1.25rem;
+  font-size: 1rem;
 }
 button:active {
   background-color: var(--blue200);

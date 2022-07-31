@@ -1,7 +1,8 @@
 import Matrix from './Matrix';
 import MatrixEq from './MatrixEq';
 import ToolBox from './ToolBox';
-import styles from './Matrix.module.css';
+// import styles from './Matrix.module.css';
+import styles from './Workspace.module.css';
 import Modal from './UI/Modal';
 import MatrixRow from './MatrixRow';
 import rowStyles from './MatrixRow.module.css';
@@ -15,16 +16,17 @@ import FlexBox from './UI/FlexBox';
 
 import { useEffect, useLayoutEffect, useState } from 'react';
 import * as math from 'mathjs';
+import { createPortal } from 'react-dom';
 
 const Workspace = () => {
   // getPerson();
 
-  const questions = [
-    'Convert the system of equations into a matrix',
-    'Reduce the following matrix to Row Echelon form',
-    'Reduce the following matrix to Reduced Row Echelon form',
-    'How many solutions does this matrix have?',
-  ];
+  // const questions = [
+  //   'Convert the system of equations into a matrix',
+  //   'Reduce the following matrix to Row Echelon form',
+  //   'Reduce the following matrix to Reduced Row Echelon form',
+  //   'How many solutions does this matrix have?',
+  // ];
 
   // const matrixC = math.matrix([
   //   [
@@ -392,49 +394,92 @@ const Workspace = () => {
     </MatrixEq>
   );
 
+  const [workspaceActive, setWorkspaceActive] = useState(false);
+  const classes = workspaceActive
+    ? `${styles.Workspace} ${styles.active}`
+    : `${styles.Workspace}`;
+
+  const iconButtons = (
+    <div style={{ position: 'absolute', bottom: '8rem' }}>
+      <FlexBox gap='10px'>
+        <IconButton
+          onClick={() => {
+            if (history.length === 0) {
+              return;
+            }
+            // console.log(history);
+            setMatrices(history.pop());
+          }}
+        >
+          <FaUndoAlt />
+        </IconButton>
+
+        <IconButton
+          onClick={() => {
+            console.log('create');
+            updateDisplayModal(true);
+            updateDisplayModalID('create');
+          }}
+        >
+          <FaPlus />
+        </IconButton>
+      </FlexBox>
+    </div>
+  );
+
+  const handleActivation = () => {
+    if (!workspaceActive) {
+      setWorkspaceActive(true);
+    } else {
+      return;
+    }
+  };
+
+  const targetPortal = document.getElementById('topModal');
   return (
-    <>
-      <p className='question'>
-        Reduce the following matrix to <i>Reduced Row Echelon form</i>.
-      </p>
-      <div style={{ position: 'absolute', bottom: '8rem' }}>
-        <FlexBox gap='10px'>
-          <IconButton
-            onClick={() => {
-              if (history.length === 0) {
-                return;
-              }
-              // console.log(history);
-              setMatrices(history.pop());
-            }}
-          >
-            <FaUndoAlt />
-          </IconButton>
-
-          <IconButton
-            onClick={() => {
-              console.log('create');
-              updateDisplayModal(true);
-              updateDisplayModalID('create');
-            }}
-          >
-            <FaPlus />
-          </IconButton>
-        </FlexBox>
-      </div>
-
-      <ToolBox data={toolbox} />
-      <Modal
-        callback={clearSelectionAndModal}
-        title='Sample Title'
-        display={displayModal}
-        style={checkModalColor}
-        cancel={clearSelectionAndModal}
-      >
-        {modalWindows[displayModalID]}
-      </Modal>
+    <div
+      className={classes}
+      onClick={() => {
+        console.log('Clicked workspace');
+        // setWorkspaceActive(true);
+        handleActivation();
+      }}
+    >
+      {workspaceActive && (
+        <button
+          onClick={() => {
+            setWorkspaceActive(false);
+          }}
+          style={{
+            padding: '0',
+            margin: '0',
+            fontSize: '1rem',
+            backgroundColor: 'transparent',
+            border: 'none',
+            color: 'white',
+            position: 'absolute',
+            right: '0.5rem',
+            top: '0.5rem',
+          }}
+        >
+          X
+        </button>
+      )}
+      {workspaceActive && iconButtons}
+      {workspaceActive && <ToolBox data={toolbox} />}
+      {workspaceActive && (
+        <Modal
+          callback={clearSelectionAndModal}
+          title='Sample Title'
+          display={displayModal}
+          style={checkModalColor}
+          cancel={clearSelectionAndModal}
+        >
+          {modalWindows[displayModalID]}
+        </Modal>
+      )}
       {matricesRender}
-    </>
+    </div>
   );
 };
 

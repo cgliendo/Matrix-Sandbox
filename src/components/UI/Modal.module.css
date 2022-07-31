@@ -1,17 +1,19 @@
 .Modal {
-  position: absolute;
+  position: relative;
   z-index: 9;
   background-color: var(--gray900);
-  height: fit-content;
-  width: 80%;
+  /* height: fit-content; */
+  width: 100%;
+  /* margin: 0; */
   padding: 0.75rem 1rem;
-  border-radius: 1rem;
-  bottom: 3rem;
+  border-radius: 0.5rem;
+  top: 3rem;
   /* bottom: -30rem; */
-  box-shadow: 0px 5px 10px rgba(0.2, 0.2, 0.2, 0.5);
+  box-shadow: 0px 5px 10px rgba(0.2, 0.2, 0.2, 0.25);
   font-size: 1rem;
   /* display: none; */
   visibility: hidden;
+  box-sizing: border-box;
 }
 
 .buttons {
@@ -25,7 +27,7 @@
   width: 4rem;
   font-size: 1.25rem;
   text-align: center;
-  border-radius: 0.5rem;
+  border-radius: 0.25rem;
   border: 1px solid transparent;
 }
 
@@ -37,7 +39,7 @@
   animation: slideout 0.3s;
 }
 .disabled {
-  background-color: aqua;
+  /* background-color: aqua; */
 }
 
 @keyframes slidein {

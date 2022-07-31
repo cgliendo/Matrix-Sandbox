@@ -7,6 +7,7 @@ const Button = (props) => {
     : () => {
         console.log('Implement Me!');
       };
+  // const isDisabled = props.disabled ? 'disabled' : '';
   const classes = `${styles.Button} ${props.className ? props.className : ''}`;
   return (
     <button style={props.style} onClick={callback} className={classes}>

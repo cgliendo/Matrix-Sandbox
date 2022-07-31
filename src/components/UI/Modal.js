@@ -6,7 +6,7 @@ import FlexBox from './FlexBox';
 const Modal = (props) => {
   let classes = `${styles.Modal} ${props.display ? styles.show : styles.hide}`;
 
-  const style = props.style ? props.style : '';
+  const style = props.style ? props.style : {};
   const buttonStyle = {
     padding: '0',
     margin: '0',

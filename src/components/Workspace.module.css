@@ -1,0 +1,30 @@
+.Workspace {
+  /* background-color: var(--gray900); */
+  background-color: #16191f;
+  min-height: 20vh;
+  position: relative;
+  border-radius: 0.5rem;
+  padding: 2rem 1rem;
+  box-sizing: border-box;
+  /* overflow: hidden; */
+}
+.Workspace > div {
+  pointer-events: none;
+}
+
+.Workspace.active {
+  margin-bottom: 5rem;
+  /* background-color: var(--gray); */
+  min-height: 98vh;
+  border: 1px solid rgb(53, 68, 66);
+  z-index: 9;
+  position: absolute;
+  /* width: 100%; */
+  width: 97%;
+  box-sizing: border-box;
+  top: -3.25rem;
+}
+
+.Workspace.active > div {
+  pointer-events: all;
+}

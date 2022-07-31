@@ -1,7 +1,7 @@
 .ToolBox {
   padding-left: 2rem;
   padding-right: 2rem;
-  width: 100%;
+  /* width: 100%; */
   position: absolute;
   bottom: 3rem;
   display: flex;
