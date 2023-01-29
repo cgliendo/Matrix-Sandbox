@@ -51,6 +51,7 @@ main p {
   padding: 0.5rem 0.5rem;
   text-align: left;
   position: relative;
+  padding-bottom: 5rem;
 }
 
 .question {
@@ -70,8 +71,13 @@ header h2 {
   margin: 0;
   font-size: 1rem;
 }
+a {
+  color: var(--white);
+  text-decoration: none;
+}
 .Window {
   background-color: var(--black);
+  /* padding-top: 1rem; */
 }
 
 button {

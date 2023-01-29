@@ -1,0 +1,5 @@
+/*Created by bash script*/
+.ScrollView {
+  /* overflow: auto; */
+  overflow-y: scroll;
+}

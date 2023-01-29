@@ -1,0 +1,8 @@
+/*Created by bash script*/
+.View {
+  /* overflow: hidden; */
+  /* width: 100%; */
+  display: flex;
+  flex-direction: column;
+  /* height: 100vh; */
+}

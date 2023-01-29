@@ -6,6 +6,7 @@ const FlexBox = (props) => {
   // classes = props.space ? (classes += ` ${styles.space}`) : '';
   props.space && (classes = `${classes} ${styles.space}`);
   props.gap && (finalStyle.gap = props.gap);
+  props.justify && (finalStyle.justifyContent = props.justify);
 
   return (
     <div style={finalStyle} className={classes}>

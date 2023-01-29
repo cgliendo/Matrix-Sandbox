@@ -1,175 +1,126 @@
-import logo from './logo.svg';
+// import logo from './logo.svg';
 import './App.css';
-import Button from './components/UI/Button';
-import Modal from './components/UI/Modal';
-import Workspace from './components/Workspace';
 import { useState } from 'react';
-import FlexBox from './components/UI/FlexBox';
-// import { GiHamburgerMenu } from 'react-icons/gi';
 import { FiMenu } from 'react-icons/fi';
+import lessonPages from './lessons/sampleLesson';
+import Pagination from './components/UI/Pagination';
+import ProgressBar from './components/UI/ProgressBar';
+import View from './components/UI/View';
+import Nav from './components/Nav';
+import StickyFooter from './components/UI/StickyFooter';
+import Button from './components/UI/Button';
+import ListWrap from './components/UI/ListWrap';
+import ListWrapItem from './components/UI/ListWrapItem';
+import LinkList from './components/UI/LinkList';
+import LinkListItem from './components/UI/LinkListItem';
 
 function App() {
   const [page, setPage] = useState(0);
-  const lessonPages = [
-    <div>
-      <div style={{ padding: '1rem' }}>
-        <h1>Chapter 1</h1>
-        <h2>Matrix Notation</h2>
-        <p>
-          Lorem ipsum dolor sit amet, consectetur adipiscing elit, sed do
-          eiusmod tempor incididunt ut labore et dolore magna aliqua.
-        </p>
-        <ul>
-          <li>consectetur adipiscing elit</li>
-          <li>labore et dolore</li>
-          <li>quis nostrud exercitation</li>
-          <li>voluptate velit esse</li>
-        </ul>
-      </div>
-    </div>,
-    <div>
-      <div style={{ padding: '1rem' }}>
-        <h2>Section 1</h2>
-        <p>
-          Lorem ipsum dolor sit amet, consectetur adipiscing elit, sed do
-          eiusmod tempor incididunt ut labore et dolore magna aliqua. Ut enim ad
-          minim veniam, quis nostrud exercitation ullamco laboris nisi ut
-          aliquip ex ea commodo consequat.
-        </p>
-        <p>
-          Lorem ipsum dolor sit amet, consectetur adipiscing elit, sed do
-          eiusmod tempor.
-        </p>
-      </div>
-    </div>,
-    <div>
-      <div style={{ padding: '1rem' }}>
-        <h2>Section 2</h2>
-        <p>
-          Lorem ipsum dolor sit amet, consectetur adipiscing elit, sed do
-          eiusmod tempor incididunt ut labore et dolore magna aliqua. Ut enim ad
-          minim veniam, quis nostrud exercitation ullamco laboris nisi ut
-          aliquip ex ea commodo consequat.
-        </p>
-        <p>
-          Duis aute irure dolor in reprehenderit in voluptate velit esse cillum
-          dolore eu fugiat nulla pariatur. Excepteur sint occaecat cupidatat non
-          proident, sunt in culpa qui officia deserunt mollit anim id est
-          laborum.
-        </p>
-      </div>
-      <Workspace />
-    </div>,
-    <div>
-      <div style={{ padding: '1rem' }}>
-        <h2>Section 3</h2>
-        <p>
-          Lorem ipsum dolor sit amet, consectetur adipiscing elit, sed do
-          eiusmod tempor incididunt ut labore et dolore magna aliqua. Ut enim ad
-          minim veniam, quis nostrud exercitation ullamco laboris nisi ut
-          aliquip ex ea commodo consequat.
-        </p>
-        <p>
-          Duis aute irure dolor in reprehenderit in voluptate velit esse cillum
-          dolore eu fugiat nulla pariatur. Excepteur sint occaecat cupidatat non
-          proident, sunt in culpa qui officia deserunt mollit anim id est
-          laborum.
-        </p>
-      </div>
-      <Workspace />
-      <div style={{ padding: '1rem' }}>
-        <p>
-          Excepteur sint occaecat cupidatat non proident, sunt in culpa qui
-          officia deserunt mollit anim id est laborum. Duis aute irure dolor in
-          reprehenderit in voluptate velit esse cillum dolore eu fugiat nulla
-          pariatur. Excepteur sint occaecat cupidatat non proident, sunt in
-          culpa qui officia deserunt mollit anim id est laborum.
-        </p>
-        <Button>Try it out</Button>
-      </div>
-    </div>,
-    <div style={{ padding: '1rem' }}>
-      <h2>Section 4</h2>
-      <p>
-        Lorem ipsum dolor sit amet, consectetur adipiscing elit, sed do eiusmod
-        tempor incididunt ut labore et dolore magna aliqua. Ut enim ad minim
-        veniam, quis nostrud exercitation ullamco laboris nisi ut aliquip ex ea
-        commodo consequat.
-      </p>
+  // const { lessonPages } = require('./lessons/sampleLesson');
 
-      <p>
-        Duis aute irure dolor in reprehenderit in voluptate velit esse cillum
-        dolore eu fugiat nulla pariatur. Excepteur sint occaecat cupidatat non
-        proident, sunt in culpa qui officia deserunt mollit anim id est laborum.
-      </p>
-      <Button>Try it out</Button>
-    </div>,
-  ];
+  const percent = ((page + 1) / lessonPages.length) * 100;
 
-  const paging = (
-    <FlexBox gap='0.5rem'>
-      {lessonPages.map((e, i) => {
-        return <div key={`page${i}`}>{i === page ? '^' : '*'}</div>;
-      })}
-    </FlexBox>
-  );
+  const paginationProps = {
+    prev: () => {
+      page !== 0 && setPage(page - 1);
+    },
+    next: () => {
+      page !== lessonPages.length - 1 && setPage(page + 1);
+    },
+    pages: Array(lessonPages.length).fill(0),
+    page: page,
+  };
+
+  const [displayMenu, setDisplayMenu] = useState(false);
 
   return (
     <div className='App'>
-      <div
+      {/* <div
         style={{ position: 'absolute', top: '0', width: '100%' }}
         id='topModal'
-      ></div>
-      <header className='Header'>
-        {/* <GiHamburgerMenu /> */}
-        <button
-          onClick={() => {
-            console.log('Menu');
-          }}
+      ></div> */}
+      <div
+        style={{
+          position: 'absolute',
+          backgroundColor: 'var(--gray900)',
+          minHeight: '100vh',
+          width: '100%',
+          left: `${displayMenu ? '0' : '-5000px'}`,
+          transition: 'left 0.25s',
+          // overflow: 'hidden',
+          zIndex: '10',
+          display: 'flex',
+          flexDirection: 'column',
+          padding: '1rem',
+          boxSizing: 'border-box',
+          // display: `${displayMenu ? 'flex' : 'none'}`,
+        }}
+      >
+        <Button
           style={{
             padding: '0',
-            border: '0',
-            fontSize: '2rem',
-            width: '2rem',
-            height: '2rem',
+            margin: '0',
+            // fontSize: '1rem',
+            backgroundColor: 'transparent',
+            border: 'none',
             color: 'white',
+            position: 'absolute',
+            right: '1rem',
+            fontSize: '2rem',
+          }}
+          callback={() => {
+            setDisplayMenu(false);
           }}
         >
-          <FiMenu />
-        </button>
-        {/* <h1>Chapter 1</h1> */}
-        {/* <h2>Matrix Notation</h2> */}
-      </header>
-
-      <main className='Window'>
-        <div className='lesson'>{lessonPages[page]}</div>
+          X
+        </Button>
         <div
           style={{
-            position: 'absolute',
-            // justifySelf: 'flex-end',
-            bottom: '12px',
+            padding: '2rem',
+            display: 'flex',
+            flexDirection: 'column',
+            // alignContent: 'center',
+            // justifyContent: 'center',
+            height: '100%',
           }}
         >
-          <FlexBox>
-            <Button
-              callback={() => {
-                page != 0 && setPage(page - 1);
-              }}
-            >
-              Prev
-            </Button>
-            {paging}
-            <Button
-              callback={() => {
-                page != lessonPages.length - 1 && setPage(page + 1);
-              }}
-            >
-              Next
-            </Button>
-          </FlexBox>
+          <h1>Matrix Sandbox</h1>
+          <LinkList>
+            <LinkListItem link={'#'}>Chapter 1</LinkListItem>
+            <LinkListItem link={'#'}>Chapter 2</LinkListItem>
+            <LinkListItem link={'#'}>Chapter 3</LinkListItem>
+            <LinkListItem link={'#'}>Chapter 4</LinkListItem>
+            <LinkListItem link={'#'}>Chapter 5</LinkListItem>
+            <LinkListItem link={'#'}>Chapter 6</LinkListItem>
+            <LinkListItem link={'#'}>Chapter 7</LinkListItem>
+            <LinkListItem link={'#'}>Chapter 8</LinkListItem>
+            <LinkListItem link={'#'}>Chapter 9</LinkListItem>
+            <LinkListItem link={'#'}>Chapter 10</LinkListItem>
+            <LinkListItem link={'#'}>Chapter 11</LinkListItem>
+            <LinkListItem link={'#'}>Chapter 12</LinkListItem>
+          </LinkList>
         </div>
-        {/* <Workspace /> */}
+      </div>
+      <Nav
+        menuCallback={() => {
+          setDisplayMenu(true);
+        }}
+      />
+      <main className='Window'>
+        <ProgressBar percent={percent} />
+        <div
+          // style={{
+          //   maxHeight: '80vh',
+          //   // overflow: 'scroll',
+          // }}
+          className='lesson'
+        >
+          {lessonPages[page]}
+        </div>
       </main>
+      <StickyFooter>
+        <Pagination {...paginationProps} />
+      </StickyFooter>
     </div>
   );
 }

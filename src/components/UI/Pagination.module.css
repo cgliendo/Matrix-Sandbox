@@ -1,0 +1,9 @@
+/*Created by bash script*/
+.Pagination {
+  background-color: var(--black);
+  width: 100%;
+  /* display: flex; */
+  /* justify-content: space-around; */
+  padding: 0.25rem 1rem;
+  border-radius: 2rem;
+}
